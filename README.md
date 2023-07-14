@@ -22,7 +22,7 @@ KeyVerse is a secure data storage and encryption application that allows you to 
 
 1. Clone the KeyVerse repository: git clone https://github.com/your-username/KeyVerse.git 
 
-2. Build the application using your preferred build system or IDE. ./KeyVerse
+2. Build the application using your preferred build system or IDE. `./KeyVerse`
 
 
 ### Usage
