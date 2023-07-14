@@ -11,9 +11,11 @@
 #include <sstream>
 #include <iomanip>
 #include <filesystem>
-#include <fstream>
 #include <stdexcept>
 #include <random>
+#include <curl/curl.h>
+
+
 
 using json = nlohmann::json;
 
@@ -252,6 +254,103 @@ std::map<std::string, std::string> retrieveDataFromFile(const std::string& key, 
 }
 
 
+
+// Function to upload a verse file to a cloud storage using RESTful API
+void uploadVerseToCloudStorage(const std::string& cloudStorageURL, const std::string& cloudStorageToken,
+    const std::string& bucketName, const std::string& verseFilePath) 
+{
+       CURL* curl = curl_easy_init();
+    if (!curl) {
+        throw std::runtime_error("Failed to initialize CURL");
+    }
+
+    // Set the URL for uploading the verse file
+    std::string uploadURL = cloudStorageURL + "/upload?bucket=" + bucketName;
+    curl_easy_setopt(curl, CURLOPT_URL, uploadURL.c_str());
+
+    // Set the Authorization header with the cloud storage token
+    std::string authHeader = "Authorization: Bearer " + cloudStorageToken;
+    struct curl_slist* headers = nullptr;
+    headers = curl_slist_append(headers, authHeader.c_str());
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+    // Set the verse file as the request payload
+    std::ifstream file(verseFilePath, std::ios::binary | std::ios::ate);
+    if (!file.is_open()) {
+        throw std::runtime_error("Failed to open verse file");
+    }
+    std::streamsize fileSize = file.tellg();
+    file.seekg(0, std::ios::beg);
+    std::vector<char> buffer(fileSize);
+    if (!file.read(buffer.data(), fileSize)) {
+        file.close();
+        throw std::runtime_error("Failed to read verse file");
+    }
+    file.close();
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, buffer.data());
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, buffer.size());
+
+    // Perform the upload request
+    CURLcode res = curl_easy_perform(curl);
+    if (res != CURLE_OK) {
+        curl_easy_cleanup(curl);
+        throw std::runtime_error("Failed to upload verse file: " + std::string(curl_easy_strerror(res)));
+    }
+
+    // Cleanup
+    curl_slist_free_all(headers);
+    curl_easy_cleanup(curl);
+}
+
+// Function to download a verse file from cloud storage using RESTful API
+void downloadVerseFromCloudStorage(const std::string& cloudStorageURL, const std::string& cloudStorageToken,
+    const std::string& bucketName, const std::string& verseFilePath,
+    const std::string& destinationFilePath) 
+{
+    CURL* curl = curl_easy_init();
+    if (!curl) {
+        throw std::runtime_error("Failed to initialize CURL");
+    }
+
+    // Set the URL for downloading the verse file
+    std::string downloadURL = cloudStorageURL + "/download?bucket=" + bucketName + "&path=" + verseFilePath;
+    curl_easy_setopt(curl, CURLOPT_URL, downloadURL.c_str());
+
+    // Set the Authorization header with the cloud storage token
+    std::string authHeader = "Authorization: Bearer " + cloudStorageToken;
+    struct curl_slist* headers = nullptr;
+    headers = curl_slist_append(headers, authHeader.c_str());
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+    // Set the callback function to write the response to the destination file
+    std::ofstream file(destinationFilePath, std::ios::binary);
+    if (!file.is_open()) {
+        curl_slist_free_all(headers);
+        curl_easy_cleanup(curl);
+        throw std::runtime_error("Failed to open destination file");
+    }
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, [](void* ptr, size_t size, size_t nmemb, void* userdata) -> size_t {
+        std::ofstream& file = *static_cast<std::ofstream*>(userdata);
+    file.write(static_cast<char*>(ptr), size * nmemb);
+    return size * nmemb;
+        });
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &file);
+
+    // Perform the download request
+    CURLcode res = curl_easy_perform(curl);
+    if (res != CURLE_OK) {
+        file.close();
+        curl_slist_free_all(headers);
+        curl_easy_cleanup(curl);
+        throw std::runtime_error("Failed to download verse file: " + std::string(curl_easy_strerror(res)));
+    }
+
+    // Cleanup
+    file.close();
+    curl_slist_free_all(headers);
+    curl_easy_cleanup(curl);
+}
+
 int main() {
     try {
         std::map<std::string, std::string> config = readConfig("config.json");
@@ -264,7 +363,7 @@ int main() {
         std::string keyId;
         std::cin >> keyId;
 
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore the newline character
+      //  std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore the newline character
 
         std::cout << "Enter value: ";
         std::string value;
@@ -297,4 +396,3 @@ int main() {
 
     return 0;
 }
-
