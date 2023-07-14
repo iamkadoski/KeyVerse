@@ -16,6 +16,7 @@
 #include <curl/curl.h>
 
 
+
 using json = nlohmann::json;
 
 //struct VerseData {
@@ -129,39 +130,137 @@ std::string decryptData(const std::string& encryptedData, const std::string& key
     return decryptedData;
 }
 
+
 // Function to save the key-value data to an encrypted verse file
-void saveData(const std::string& key, const std::string& verseFilePath, const std::string& dataFilePath, const std::string& keyId, const std::string& value) 
+// 
+//void saveData(const std::string& key, const std::string& verseFilePath, const std::string& dataFilePath, const std::string& keyId, const std::string& value) 
+//{
+//    std::map<std::string, std::string> data;
+//
+//    // Check if the verse file exists
+//    std::ifstream verseFile(verseFilePath);
+//    if (verseFile) {
+//        std::string encryptedData((std::istreambuf_iterator<char>(verseFile)), std::istreambuf_iterator<char>());
+//        verseFile.close();
+//
+//        std::string decryptedData = decryptData(encryptedData, key);
+//        data = json::parse(decryptedData);
+//    }
+//
+//    // Add the new key-value pair
+//    data[keyId] = value;
+//
+//    // Encrypt the updated data
+//    std::string jsonData = json(data).dump();
+//    std::string encryptedData = encryptData(jsonData, key);
+//
+//    // Save the encrypted data to the verse file
+//    std::ofstream file(dataFilePath, std::ios::binary);
+//    if (!file) {
+//        throw std::runtime_error("Failed to open file for writing");
+//    }
+//
+//    file << encryptedData;
+//    file.close();
+//
+//    std::cout << "Data saved to " << dataFilePath << std::endl;
+//}
+
+//void saveData(const std::string& key, const std::string& verseFilePath, const std::string& dataFilePath, const std::string& keyId, const std::string& value) {
+//    std::map<std::string, std::string> data;
+//
+//    // Check if the verse file exists
+//    std::ifstream verseFile(verseFilePath);
+//    if (verseFile) {
+//        std::string encryptedData((std::istreambuf_iterator<char>(verseFile)), std::istreambuf_iterator<char>());
+//        verseFile.close();
+//
+//        std::string decryptedData = decryptData(encryptedData, key);
+//        data = json::parse(decryptedData);
+//    }
+//
+//    // Add the new key-value pair
+//    data[keyId] = value;
+//
+//    // Encrypt the updated data
+//    std::string jsonData = json(data).dump();
+//    std::string encryptedData = encryptData(jsonData, key);
+//
+//    // Save the encrypted data to the data file
+//    std::ofstream dataFile(dataFilePath, std::ios::binary);
+//    if (!dataFile) {
+//        throw std::runtime_error("Failed to open data file for writing");
+//    }
+//    dataFile.write(encryptedData.c_str(), encryptedData.size());
+//    dataFile.close();
+//
+//    // Encrypt the verse data
+//    std::string verseData = encryptData(jsonData, key);
+//
+//    // Save the encrypted verse data to the verse file
+//    std::ofstream verseFileOut(verseFilePath, std::ios::binary);
+//    if (!verseFileOut) {
+//        throw std::runtime_error("Failed to open verse file for writing");
+//    }
+//    verseFileOut.write(verseData.c_str(), verseData.size());
+//    verseFileOut.close();
+//
+//    std::cout << "Data saved to " << verseFilePath << " and " << dataFilePath << std::endl;
+//}
+//
+
+
+// Function to save the key-value data to an encrypted verse file and a single data file
+void saveData(  const std::string& key,     
+                const std::string& verseFilePath, 
+                const std::string& dataFilePath, 
+                const std::map<std::string, std::string>& keyValues, 
+                const std::string& encryptionKey) 
 {
-    std::map<std::string, std::string> data;
+    // Encrypt the data
+    std::string jsonData = json(keyValues).dump();
+    std::string encryptedData = encryptData(jsonData, encryptionKey);
 
-    // Check if the verse file exists
-    std::ifstream verseFile(verseFilePath);
-    if (verseFile) {
-        std::string encryptedData((std::istreambuf_iterator<char>(verseFile)), std::istreambuf_iterator<char>());
-        verseFile.close();
-
-        std::string decryptedData = decryptData(encryptedData, key);
-        data = json::parse(decryptedData);
+    // Save the encrypted data to both the verse file and the data file
+    std::ofstream verseFileOut(verseFilePath, std::ios::binary);
+    if (!verseFileOut) {
+        throw std::runtime_error("Failed to open verse file for writing");
     }
+    verseFileOut.write(encryptedData.c_str(), encryptedData.size());
+    verseFileOut.close();
 
-    // Add the new key-value pair
-    data[keyId] = value;
+    std::ofstream dataFile(dataFilePath, std::ios::binary);
+    if (!dataFile) {
+        throw std::runtime_error("Failed to open data file for writing");
+    }
+    dataFile.write(encryptedData.c_str(), encryptedData.size());
+    dataFile.close();
 
-    // Encrypt the updated data
-    std::string jsonData = json(data).dump();
-    std::string encryptedData = encryptData(jsonData, key);
+    std::cout << "Data saved to " << verseFilePath << " and " << dataFilePath << std::endl;
+}
 
-    // Save the encrypted data to the verse file
-    std::ofstream file(dataFilePath, std::ios::binary);
+// Function to retrieve data from the data file and decrypt it
+std::map<std::string, std::string> retrieveData(const std::string& encryptionKey, const std::string& dataFilePath) {
+    std::map<std::string, std::string> keyValues;
+
+    std::ifstream file(dataFilePath, std::ios::binary);
     if (!file) {
-        throw std::runtime_error("Failed to open file for writing");
+        throw std::runtime_error("Failed to open data file for reading");
     }
 
-    file << encryptedData;
+    std::string encryptedData((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     file.close();
 
-    std::cout << "Data saved to " << dataFilePath << std::endl;
+    std::string decryptedData = decryptData(encryptedData, encryptionKey);
+    json jsonData = json::parse(decryptedData);
+
+    for (auto it = jsonData.begin(); it != jsonData.end(); ++it) {
+        keyValues[it.key()] = it.value();
+    }
+
+    return keyValues;
 }
+
 
 // Function to generate a GUID
 std::string generateGUID() {
@@ -212,27 +311,27 @@ std::string generateGUID() {
 
 
 // Function to retrieve data from a data file
-std::map<std::string, std::string> retrieveData(const std::string& key, const std::string& dataFilePath) {
-    std::map<std::string, std::string> data;
-
-    std::ifstream file(dataFilePath, std::ios::binary);
-    if (!file) {
-        throw std::runtime_error("Failed to open data file for reading");
-    }
-
-    std::string encryptedData((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-    file.close();
-
-    std::string decryptedData = decryptData(encryptedData, key);
-    json jsonData = json::parse(decryptedData);
-
-    for (auto it = jsonData.begin(); it != jsonData.end(); ++it) 
-    {
-        data[it.key()] = it.value();
-    }
-
-    return data;
-}
+//std::map<std::string, std::string> retrieveData(const std::string& key, const std::string& dataFilePath) {
+//    std::map<std::string, std::string> data;
+//
+//    std::ifstream file(dataFilePath, std::ios::binary);
+//    if (!file) {
+//        throw std::runtime_error("Failed to open data file for reading");
+//    }
+//
+//    std::string encryptedData((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+//    file.close();
+//
+//    std::string decryptedData = decryptData(encryptedData, key);
+//    json jsonData = json::parse(decryptedData);
+//
+//    for (auto it = jsonData.begin(); it != jsonData.end(); ++it) 
+//    {
+//        data[it.key()] = it.value();
+//    }
+//
+//    return data;
+//}
 
 // Function to retrieve data from a data file
 std::map<std::string, std::string> retrieveDataFromFile(const std::string& key, const std::string& dataFilePath) {
@@ -353,54 +452,113 @@ void downloadVerseFromCloudStorage(const std::string& cloudStorageURL, const std
     curl_easy_cleanup(curl);
 }
 
+//
+//int main() {
+//    try {
+//
+//        //executeKeyVerseCLI();
+//        std::map<std::string, std::string> config = readConfig("config.json");
+//
+//        std::string verseFolderPath = config["verseFolderPath"];
+//        std::string encryptionKey = config["encryptionKey"];
+//
+//        // Prompt user to enter the key ID and value
+//        std::cout << "Enter key ID: ";
+//        std::string keyId;
+//        std::getline(std::cin, keyId);
+//
+//        std::cout << "Enter value: ";
+//        std::string value;
+//        std::getline(std::cin, value);
+//
+//       /* std::cout << "Enter phrase to encrypt: ";
+//        std::string encryptionKey;
+//        std::getline(std::cin, encryptionKey);
+//        */
+//
+//        // Create the verse folder if it doesn't exist
+//        std::filesystem::create_directory(verseFolderPath);
+//
+//        // Generate a unique filename for the verse and data files
+//        std::string guid = generateGUID();
+//
+//        std::string verseFilePath = verseFolderPath + "/" + keyId + "_" + guid + ".vs";
+//        std::string dataFilePath = verseFolderPath + "/" + keyId + "_" + guid + ".dat";
+//
+//        // Save the data to the verse file
+//        saveData(encryptionKey, verseFilePath, dataFilePath, keyId, value);
+//
+//        // Retrieve the data from the data file
+//        std::map<std::string, std::string> retrievedData = retrieveData(encryptionKey, dataFilePath);
+//
+//        // Print the retrieved data
+//        std::cout << "Retrieved data from " << dataFilePath << ":" << std::endl;
+//
+//        for (const auto& pair : retrievedData) {
+//            std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
+//        }
+//    }
+//    catch (const std::exception& ex) {
+//        std::cout << "Exception occurred: " << ex.what() << std::endl;
+//        // Handle the exception gracefully
+//    }
+//
+//    return 0;
+//}
 
-int main() {
-    try {
-        std::map<std::string, std::string> config = readConfig("config.json");
+    int main() {
+        try {
+            std::map<std::string, std::string> config = readConfig("config.json");
 
-        std::string verseFolderPath = config["verseFolderPath"];
-        std::string encryptionKey = config["encryptionKey"];
+            std::string verseFolderPath = config["verseFolderPath"];
+            std::string encryptionKey = config["encryptionKey"];
 
-        // Prompt user to enter the key ID and value
-        std::cout << "Enter key ID: ";
-        std::string keyId;
-        std::getline(std::cin, keyId);
+            // Prompt user to enter the key ID and value
+            std::cout << "Enter key ID: ";
+            std::string keyId;
+            std::getline(std::cin, keyId);
 
-        std::cout << "Enter value: ";
-        std::string value;
-        std::getline(std::cin, value);
+            std::cout << "Enter value: ";
+            std::string value;
+            std::getline(std::cin, value);
 
-       /* std::cout << "Enter phrase to encrypt: ";
-        std::string encryptionKey;
-        std::getline(std::cin, encryptionKey);
-        */
+            // Create the verse folder if it doesn't exist
+            std::filesystem::create_directory(verseFolderPath);
 
-        // Create the verse folder if it doesn't exist
-        std::filesystem::create_directory(verseFolderPath);
+            // Generate a unique filename for the verse and data files
+            //std::string guid = generateGUID();
 
-        // Generate a unique filename for the verse and data files
-        std::string guid = generateGUID();
+            std::string verseFilePath = verseFolderPath + "/data.vs";
+            std::string dataFilePath = verseFolderPath + "/data.dat";
 
-        std::string verseFilePath = verseFolderPath + "/" + keyId + "_" + guid + ".vs";
-        std::string dataFilePath = verseFolderPath + "/" + keyId + "_" + guid + ".dat";
+            // Retrieve existing data from the data file, if any
+            std::map<std::string, std::string> existingData;
+            try {
+                existingData = retrieveData(encryptionKey, dataFilePath);
+            }
+            catch (const std::exception& ex) {
+                // Ignore if data file doesn't exist or is empty
+            }
 
-        // Save the data to the verse file
-        saveData(encryptionKey, verseFilePath, dataFilePath, keyId, value);
+            // Add the new key-value pair to the existing data
+            existingData[keyId] = value;
 
-        // Retrieve the data from the data file
-        std::map<std::string, std::string> retrievedData = retrieveData(encryptionKey, dataFilePath);
+            // Save all the data to the verse file and data file
+            saveData(encryptionKey, verseFilePath, dataFilePath, existingData, encryptionKey);
 
-        // Print the retrieved data
-        std::cout << "Retrieved data from " << dataFilePath << ":" << std::endl;
+            // Retrieve the data from the data file
+            std::map<std::string, std::string> retrievedData = retrieveData(encryptionKey, dataFilePath);
 
-        for (const auto& pair : retrievedData) {
-            std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
+            // Print the retrieved data
+            std::cout << "Retrieved data from " << dataFilePath << ":" << std::endl;
+            for (const auto& pair : retrievedData) {
+                std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
+            }
         }
-    }
-    catch (const std::exception& ex) {
-        std::cout << "Exception occurred: " << ex.what() << std::endl;
-        // Handle the exception gracefully
-    }
+        catch (const std::exception& ex) {
+            std::cout << "Exception occurred: " << ex.what() << std::endl;
+            // Handle the exception gracefully
+        }
 
-    return 0;
-}
+        return 0;
+    }
