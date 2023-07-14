@@ -11,6 +11,7 @@ Each verse file contains encrypted data and metadata associated with the stored 
 - Save data to encrypted verse files with metadata.
 - Retrieve data from verse files.
 - Configuration management through a JSON config file.
+- Verse file upload to a cloud storage(AWS S3) using RESTful API
 
 ## Getting Started
 
