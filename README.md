@@ -1,6 +1,7 @@
 # KeyVerse
 
-KeyVerse is a secure data storage and encryption application that allows you to store sensitive data in encrypted verse files. Each verse file contains encrypted data and metadata associated with the stored information.
+KeyVerse is a secure data storage and encryption application that allows you to store sensitive data in encrypted verse files. 
+Each verse file contains encrypted data and metadata associated with the stored information.
 
 ## Features
 
