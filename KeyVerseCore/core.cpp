@@ -18,6 +18,13 @@
 
 using json = nlohmann::json;
 
+//struct VerseData {
+//    std::string key;
+//    std::string value;
+//    std::chrono::system_clock::time_point expiration;
+//};
+//
+
 // Function to read the configuration from the config file
 std::map<std::string, std::string> readConfig(const std::string& configFilePath) {
     std::ifstream file(configFilePath);
@@ -123,7 +130,8 @@ std::string decryptData(const std::string& encryptedData, const std::string& key
 }
 
 // Function to save the key-value data to an encrypted verse file
-void saveData(const std::string& key, const std::string& verseFilePath, const std::string& dataFilePath, const std::string& keyId, const std::string& value) {
+void saveData(const std::string& key, const std::string& verseFilePath, const std::string& dataFilePath, const std::string& keyId, const std::string& value) 
+{
     std::map<std::string, std::string> data;
 
     // Check if the verse file exists
@@ -218,7 +226,8 @@ std::map<std::string, std::string> retrieveData(const std::string& key, const st
     std::string decryptedData = decryptData(encryptedData, key);
     json jsonData = json::parse(decryptedData);
 
-    for (auto it = jsonData.begin(); it != jsonData.end(); ++it) {
+    for (auto it = jsonData.begin(); it != jsonData.end(); ++it) 
+    {
         data[it.key()] = it.value();
     }
 
@@ -355,9 +364,7 @@ int main() {
         // Prompt user to enter the key ID and value
         std::cout << "Enter key ID: ";
         std::string keyId;
-        std::cin >> keyId;
-
-      //  std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore the newline character
+        std::getline(std::cin, keyId);
 
         std::cout << "Enter value: ";
         std::string value;
@@ -368,6 +375,7 @@ int main() {
 
         // Generate a unique filename for the verse and data files
         std::string guid = generateGUID();
+
         std::string verseFilePath = verseFolderPath + "/" + keyId + "_" + guid + ".vs";
         std::string dataFilePath = verseFolderPath + "/" + keyId + "_" + guid + ".dat";
 
