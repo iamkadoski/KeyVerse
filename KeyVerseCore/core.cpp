@@ -16,10 +16,7 @@
 #include <curl/curl.h>
 
 
-
 using json = nlohmann::json;
-
-
 
 // Function to read the configuration from the config file
 std::map<std::string, std::string> readConfig(const std::string& configFilePath) {
@@ -39,7 +36,6 @@ std::map<std::string, std::string> readConfig(const std::string& configFilePath)
 
     return config;
 }
-
 
 
 // Function to generate a random encryption key
@@ -159,7 +155,6 @@ void saveData(const std::string& key, const std::string& verseFilePath, const st
     std::cout << "Data saved to " << dataFilePath << std::endl;
 }
 
-
 // Function to generate a GUID
 std::string generateGUID() {
     // Create a random number generator
@@ -208,7 +203,6 @@ std::string generateGUID() {
 }
 
 
-
 // Function to retrieve data from a data file
 std::map<std::string, std::string> retrieveData(const std::string& key, const std::string& dataFilePath) {
     std::map<std::string, std::string> data;
@@ -252,7 +246,6 @@ std::map<std::string, std::string> retrieveDataFromFile(const std::string& key, 
 
     return data;
 }
-
 
 
 // Function to upload a verse file to a cloud storage using RESTful API
@@ -350,6 +343,7 @@ void downloadVerseFromCloudStorage(const std::string& cloudStorageURL, const std
     curl_slist_free_all(headers);
     curl_easy_cleanup(curl);
 }
+
 
 int main() {
     try {
