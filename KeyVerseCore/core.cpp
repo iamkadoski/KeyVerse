@@ -370,6 +370,11 @@ int main() {
         std::string value;
         std::getline(std::cin, value);
 
+       /* std::cout << "Enter phrase to encrypt: ";
+        std::string encryptionKey;
+        std::getline(std::cin, encryptionKey);
+        */
+
         // Create the verse folder if it doesn't exist
         std::filesystem::create_directory(verseFolderPath);
 
@@ -387,6 +392,7 @@ int main() {
 
         // Print the retrieved data
         std::cout << "Retrieved data from " << dataFilePath << ":" << std::endl;
+
         for (const auto& pair : retrievedData) {
             std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
         }
