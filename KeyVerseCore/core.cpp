@@ -131,10 +131,11 @@ std::string decryptData(const std::string& encryptedData, const std::string& key
 }
 
 
-// Function to save the key-value data to an encrypted verse file
-void saveData(const std::string& key, const std::string& verseFilePath, const std::string& dataFilePath, const std::string& keyId, const std::string& value) 
-{
-    std::map<std::string, std::string> data;
+// Function to save the key-value data to an encrypted verse file and a single data file
+void saveData(const std::string& key, const std::string& verseFilePath, const std::string& dataFilePath, const std::map<std::string, std::string>& keyValues, const std::string& encryptionKey) {
+    // Encrypt the data
+    std::string jsonData = json(keyValues).dump();
+    std::string encryptedData = encryptData(jsonData, encryptionKey);
 
     // Save the encrypted data to both the verse file and the data file
     std::ofstream verseFileOut(verseFilePath, std::ios::binary);
@@ -158,21 +159,22 @@ void saveData(const std::string& key, const std::string& verseFilePath, const st
 std::map<std::string, std::string> retrieveData(const std::string& encryptionKey, const std::string& dataFilePath) {
     std::map<std::string, std::string> keyValues;
 
-    // Save the encrypted data to the verse file
-    std::ofstream file(dataFilePath, std::ios::binary);
+    std::ifstream file(dataFilePath, std::ios::binary);
     if (!file) {
-        throw std::runtime_error("Failed to open file for writing");
+        throw std::runtime_error("Failed to open data file for reading");
     }
-    dataFile.write(encryptedData.c_str(), encryptedData.size());
-    dataFile.close();
 
-    // Encrypt the verse data
-    std::string verseData = encryptData(jsonData, key);
-
-    file << encryptedData;
+    std::string encryptedData((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     file.close();
 
-    std::cout << "Data saved to " << dataFilePath << std::endl;
+    std::string decryptedData = decryptData(encryptedData, encryptionKey);
+    json jsonData = json::parse(decryptedData);
+
+    for (auto it = jsonData.begin(); it != jsonData.end(); ++it) {
+        keyValues[it.key()] = it.value();
+    }
+
+    return keyValues;
 }
 
 // Function to generate a GUID
