@@ -132,94 +132,9 @@ std::string decryptData(const std::string& encryptedData, const std::string& key
 
 
 // Function to save the key-value data to an encrypted verse file
-// 
-//void saveData(const std::string& key, const std::string& verseFilePath, const std::string& dataFilePath, const std::string& keyId, const std::string& value) 
-//{
-//    std::map<std::string, std::string> data;
-//
-//    // Check if the verse file exists
-//    std::ifstream verseFile(verseFilePath);
-//    if (verseFile) {
-//        std::string encryptedData((std::istreambuf_iterator<char>(verseFile)), std::istreambuf_iterator<char>());
-//        verseFile.close();
-//
-//        std::string decryptedData = decryptData(encryptedData, key);
-//        data = json::parse(decryptedData);
-//    }
-//
-//    // Add the new key-value pair
-//    data[keyId] = value;
-//
-//    // Encrypt the updated data
-//    std::string jsonData = json(data).dump();
-//    std::string encryptedData = encryptData(jsonData, key);
-//
-//    // Save the encrypted data to the verse file
-//    std::ofstream file(dataFilePath, std::ios::binary);
-//    if (!file) {
-//        throw std::runtime_error("Failed to open file for writing");
-//    }
-//
-//    file << encryptedData;
-//    file.close();
-//
-//    std::cout << "Data saved to " << dataFilePath << std::endl;
-//}
-
-//void saveData(const std::string& key, const std::string& verseFilePath, const std::string& dataFilePath, const std::string& keyId, const std::string& value) {
-//    std::map<std::string, std::string> data;
-//
-//    // Check if the verse file exists
-//    std::ifstream verseFile(verseFilePath);
-//    if (verseFile) {
-//        std::string encryptedData((std::istreambuf_iterator<char>(verseFile)), std::istreambuf_iterator<char>());
-//        verseFile.close();
-//
-//        std::string decryptedData = decryptData(encryptedData, key);
-//        data = json::parse(decryptedData);
-//    }
-//
-//    // Add the new key-value pair
-//    data[keyId] = value;
-//
-//    // Encrypt the updated data
-//    std::string jsonData = json(data).dump();
-//    std::string encryptedData = encryptData(jsonData, key);
-//
-//    // Save the encrypted data to the data file
-//    std::ofstream dataFile(dataFilePath, std::ios::binary);
-//    if (!dataFile) {
-//        throw std::runtime_error("Failed to open data file for writing");
-//    }
-//    dataFile.write(encryptedData.c_str(), encryptedData.size());
-//    dataFile.close();
-//
-//    // Encrypt the verse data
-//    std::string verseData = encryptData(jsonData, key);
-//
-//    // Save the encrypted verse data to the verse file
-//    std::ofstream verseFileOut(verseFilePath, std::ios::binary);
-//    if (!verseFileOut) {
-//        throw std::runtime_error("Failed to open verse file for writing");
-//    }
-//    verseFileOut.write(verseData.c_str(), verseData.size());
-//    verseFileOut.close();
-//
-//    std::cout << "Data saved to " << verseFilePath << " and " << dataFilePath << std::endl;
-//}
-//
-
-
-// Function to save the key-value data to an encrypted verse file and a single data file
-void saveData(  const std::string& key,     
-                const std::string& verseFilePath, 
-                const std::string& dataFilePath, 
-                const std::map<std::string, std::string>& keyValues, 
-                const std::string& encryptionKey) 
+void saveData(const std::string& key, const std::string& verseFilePath, const std::string& dataFilePath, const std::string& keyId, const std::string& value) 
 {
-    // Encrypt the data
-    std::string jsonData = json(keyValues).dump();
-    std::string encryptedData = encryptData(jsonData, encryptionKey);
+    std::map<std::string, std::string> data;
 
     // Save the encrypted data to both the verse file and the data file
     std::ofstream verseFileOut(verseFilePath, std::ios::binary);
@@ -243,24 +158,22 @@ void saveData(  const std::string& key,
 std::map<std::string, std::string> retrieveData(const std::string& encryptionKey, const std::string& dataFilePath) {
     std::map<std::string, std::string> keyValues;
 
-    std::ifstream file(dataFilePath, std::ios::binary);
+    // Save the encrypted data to the verse file
+    std::ofstream file(dataFilePath, std::ios::binary);
     if (!file) {
-        throw std::runtime_error("Failed to open data file for reading");
+        throw std::runtime_error("Failed to open file for writing");
     }
+    dataFile.write(encryptedData.c_str(), encryptedData.size());
+    dataFile.close();
 
-    std::string encryptedData((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    // Encrypt the verse data
+    std::string verseData = encryptData(jsonData, key);
+
+    file << encryptedData;
     file.close();
 
-    std::string decryptedData = decryptData(encryptedData, encryptionKey);
-    json jsonData = json::parse(decryptedData);
-
-    for (auto it = jsonData.begin(); it != jsonData.end(); ++it) {
-        keyValues[it.key()] = it.value();
-    }
-
-    return keyValues;
+    std::cout << "Data saved to " << dataFilePath << std::endl;
 }
-
 
 // Function to generate a GUID
 std::string generateGUID() {
