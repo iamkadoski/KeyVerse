@@ -411,7 +411,8 @@ int main() {
         std::map<std::string, std::string> keyValues; // Define keyValues here
 
         // Load existing data from files, if any
-        try {
+        try 
+        {
             keyValues = retrieveData(encryptionKey, dataFilePath);
         }
         catch (const std::exception& ex) {
