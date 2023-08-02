@@ -343,27 +343,28 @@ void downloadVerseFromCloudStorage(const std::string& cloudStorageURL, const std
 }
 
 
-std::string handleRequest(const std::string& request, std::map<std::string, std::string>& keyValues) {
+std::string handleRequest(const std::string& request, std::map<std::string, std::string>& keyValues) 
+{
 	std::string action;
 
 	// Find the first space character in the request
 
 	size_t firstDelimPos = request.find('|');
+
 	if (firstDelimPos != std::string::npos)
 	{
 		action = request.substr(0, firstDelimPos);
 
 		size_t secondDelimPos = request.find('|', firstDelimPos + 1);
 
-		if (secondDelimPos != std::string::npos)
-		{
+		
 			std::string  key = request.substr(firstDelimPos + 1, secondDelimPos - firstDelimPos - 1);
 
 
 			std::string  value = request.substr(secondDelimPos + 1);
 
-			if (action == "SAVE") {
-				//std::string key, value;
+			if (action == "SAVE") 
+            {
 
 				keyValues[key] = value;
 				saveData(keyValues, encryptionKey);
@@ -371,11 +372,10 @@ std::string handleRequest(const std::string& request, std::map<std::string, std:
 				//std::cout << "Action: " << action << std::endl;
 				return "Data saved successfully.";
 			}
-			else if (action == "RETRIEVE") {
-				std::string key;
-
-
+			else if (action == "RETRIEVE") 
+            {
 				std::map<std::string, std::string>::iterator it = keyValues.find(key);
+
 				if (it != keyValues.end()) {
 					return it->second;
 				}
@@ -390,7 +390,7 @@ std::string handleRequest(const std::string& request, std::map<std::string, std:
 				return encryptedData;
 
 			}
-		}
+		
 
 	}
 	return "Invalid request.";
