@@ -14,10 +14,16 @@
 #include <stdexcept>
 #include <random>
 #include <curl/curl.h>
-
+#include "log.h"
+#include <boost/asio.hpp>
 
 
 using json = nlohmann::json;
+namespace asio = boost::asio;
+
+std::string verseFilePath = "data.vs";
+std::string dataFilePath = "data.dat";
+std::string encryptionKey;
 
 //struct VerseData {
 //    std::string key;
@@ -44,7 +50,6 @@ std::map<std::string, std::string> readConfig(const std::string& configFilePath)
 
     return config;
 }
-
 
 // Function to generate a random encryption key
 std::string generateKey() {
@@ -132,7 +137,32 @@ std::string decryptData(const std::string& encryptedData, const std::string& key
 
 
 // Function to save the key-value data to an encrypted verse file and a single data file
-void saveData(const std::string& key, const std::string& verseFilePath, const std::string& dataFilePath, const std::map<std::string, std::string>& keyValues, const std::string& encryptionKey) {
+//void saveData(const std::string& key, const std::string& verseFilePath, const std::string& dataFilePath, const std::map<std::string, std::string>& keyValues, const std::string& encryptionKey) {
+//    // Encrypt the data
+//    std::string jsonData = json(keyValues).dump();
+//    std::string encryptedData = encryptData(jsonData, encryptionKey);
+//
+//    // Save the encrypted data to both the verse file and the data file
+//    std::ofstream verseFileOut(verseFilePath, std::ios::binary);
+//    if (!verseFileOut) {
+//        throw std::runtime_error("Failed to open verse file for writing");
+//    }
+//    verseFileOut.write(encryptedData.c_str(), encryptedData.size());
+//    verseFileOut.close();
+//
+//    std::ofstream dataFile(dataFilePath, std::ios::binary);
+//    if (!dataFile) {
+//        throw std::runtime_error("Failed to open data file for writing");
+//    }
+//    dataFile.write(encryptedData.c_str(), encryptedData.size());
+//    dataFile.close();
+//
+//    std::cout << "Data saved to " << verseFilePath << " and " << dataFilePath << std::endl;
+//}
+
+
+// Function to save the key-value data to an encrypted verse file and a single data file
+void saveData(const std::map<std::string, std::string>& keyValues, const std::string& encryptionKey) {
     // Encrypt the data
     std::string jsonData = json(keyValues).dump();
     std::string encryptedData = encryptData(jsonData, encryptionKey);
@@ -226,29 +256,6 @@ std::string generateGUID() {
 
 
 // Function to retrieve data from a data file
-//std::map<std::string, std::string> retrieveData(const std::string& key, const std::string& dataFilePath) {
-//    std::map<std::string, std::string> data;
-//
-//    std::ifstream file(dataFilePath, std::ios::binary);
-//    if (!file) {
-//        throw std::runtime_error("Failed to open data file for reading");
-//    }
-//
-//    std::string encryptedData((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-//    file.close();
-//
-//    std::string decryptedData = decryptData(encryptedData, key);
-//    json jsonData = json::parse(decryptedData);
-//
-//    for (auto it = jsonData.begin(); it != jsonData.end(); ++it) 
-//    {
-//        data[it.key()] = it.value();
-//    }
-//
-//    return data;
-//}
-
-// Function to retrieve data from a data file
 std::map<std::string, std::string> retrieveDataFromFile(const std::string& key, const std::string& dataFilePath) {
     std::map<std::string, std::string> data;
 
@@ -269,7 +276,6 @@ std::map<std::string, std::string> retrieveDataFromFile(const std::string& key, 
 
     return data;
 }
-
 
 // Function to upload a verse file to a cloud storage using RESTful API
 void uploadVerseToCloudStorage(const std::string& cloudStorageURL, const std::string& cloudStorageToken,
@@ -367,113 +373,211 @@ void downloadVerseFromCloudStorage(const std::string& cloudStorageURL, const std
     curl_easy_cleanup(curl);
 }
 
+
+
+////function to handle request
+//std::string handleRequest(const std::string& request, std::map<std::string, std::string>& keyValues) {
+//    std::istringstream iss(request);
+//    std::string action;
+//    iss >> action;
 //
-//int main() {
-//    try {
+//    if (action == "SAVE") {
+//        std::string key, value;
+//        iss >> key >> value;
 //
-//        //executeKeyVerseCLI();
-//        std::map<std::string, std::string> config = readConfig("config.json");
+//        keyValues[key] = value;
+//        saveData(keyValues, encryptionKey);
+//        return "Data saved successfully.";
+//    }
+//    else if (action == "RETRIEVE") {
+//        std::string key;
+//        iss >> key;
 //
-//        std::string verseFolderPath = config["verseFolderPath"];
-//        std::string encryptionKey = config["encryptionKey"];
-//
-//        // Prompt user to enter the key ID and value
-//        std::cout << "Enter key ID: ";
-//        std::string keyId;
-//        std::getline(std::cin, keyId);
-//
-//        std::cout << "Enter value: ";
-//        std::string value;
-//        std::getline(std::cin, value);
-//
-//       /* std::cout << "Enter phrase to encrypt: ";
-//        std::string encryptionKey;
-//        std::getline(std::cin, encryptionKey);
-//        */
-//
-//        // Create the verse folder if it doesn't exist
-//        std::filesystem::create_directory(verseFolderPath);
-//
-//        // Generate a unique filename for the verse and data files
-//        std::string guid = generateGUID();
-//
-//        std::string verseFilePath = verseFolderPath + "/" + keyId + "_" + guid + ".vs";
-//        std::string dataFilePath = verseFolderPath + "/" + keyId + "_" + guid + ".dat";
-//
-//        // Save the data to the verse file
-//        saveData(encryptionKey, verseFilePath, dataFilePath, keyId, value);
-//
-//        // Retrieve the data from the data file
-//        std::map<std::string, std::string> retrievedData = retrieveData(encryptionKey, dataFilePath);
-//
-//        // Print the retrieved data
-//        std::cout << "Retrieved data from " << dataFilePath << ":" << std::endl;
-//
-//        for (const auto& pair : retrievedData) {
-//            std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
+//        std::map<std::string, std::string>::iterator it = keyValues.find(key);
+//        if (it != keyValues.end()) {
+//            return it->second;
+//        }
+//        else {
+//            return "Key not found.";
 //        }
 //    }
-//    catch (const std::exception& ex) {
-//        std::cout << "Exception occurred: " << ex.what() << std::endl;
-//        // Handle the exception gracefully
+//    else if (action == "BACKUP") {
+//        // Encrypt the data
+//        std::string jsonData = json(keyValues).dump();
+//        std::string encryptedData = encryptData(jsonData, encryptionKey);
+//        return encryptedData;
 //    }
 //
-//    return 0;
+//    return "Invalid request.";
 //}
 
-    int main() {
+////main function
+//// 
+//    //int main() {
+//    //    try {
+//    //        std::map<std::string, std::string> config = readConfig("config.json");
+//
+//    //        std::string verseFolderPath = config["verseFolderPath"];
+//    //        std::string encryptionKey = config["encryptionKey"];
+//
+//    //        // Prompt user to enter the key ID and value
+//    //        std::cout << "Enter key ID: ";
+//    //        std::string keyId;
+//    //        std::getline(std::cin, keyId);
+//
+//    //        std::cout << "Enter value: ";
+//    //        std::string value;
+//    //        std::getline(std::cin, value);
+//
+//    //        // Create the verse folder if it doesn't exist
+//    //        std::filesystem::create_directory(verseFolderPath);
+//
+//    //        // Generate a unique filename for the verse and data files
+//    //        //std::string guid = generateGUID();
+//
+//    //        std::string verseFilePath = verseFolderPath + "/data.vs";
+//    //        std::string dataFilePath = verseFolderPath + "/data.dat";
+//
+//    //        // Retrieve existing data from the data file, if any
+//    //        std::map<std::string, std::string> existingData;
+//    //        try 
+//    //        {
+//    //            existingData = retrieveData(encryptionKey, dataFilePath);
+//    //        }
+//    //        catch (const std::exception& ex) {
+//    //            // Ignore if data file doesn't exist or is empty
+//    //        }
+//
+//    //        // Add the new key-value pair to the existing data
+//    //        existingData[keyId] = value;
+//
+//    //        // Save all the data to the verse file and data file
+//    //        saveData(encryptionKey, verseFilePath, dataFilePath, existingData, encryptionKey);
+//
+//    //        // Retrieve the data from the data file
+//    //        std::map<std::string, std::string> retrievedData = retrieveData(encryptionKey, dataFilePath);
+//
+//    //        // Print the retrieved data
+//    //        std::cout << "Retrieved data from " << dataFilePath << ":" << std::endl;
+//
+//    //        for (const auto& pair : retrievedData) {
+//    //            std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
+//    // 
+//    //        }
+//
+//    //    }
+//    //    catch (const std::exception& ex) {
+//    //       // std::cout << "Exception occurred: " << ex.what() << std::endl;
+//    //        log(ex.what());
+//    //        // Handle the exception gracefully
+//    //    }
+//
+//    //    return 0;
+//    //}
+
+std::string handleRequest(const std::string& request, std::map<std::string, std::string>& keyValues) {
+	std::string action;
+
+	// Find the first space character in the request
+
+	size_t firstDelimPos = request.find('|');
+	if (firstDelimPos != std::string::npos)
+	{
+		action = request.substr(0, firstDelimPos);
+
+		size_t secondDelimPos = request.find('|', firstDelimPos + 1);
+
+		if (secondDelimPos != std::string::npos)
+		{
+			std::string  key = request.substr(firstDelimPos + 1, secondDelimPos - firstDelimPos - 1);
+
+
+			std::string  value = request.substr(secondDelimPos + 1);
+
+			if (action == "SAVE") {
+				//std::string key, value;
+
+				keyValues[key] = value;
+				saveData(keyValues, encryptionKey);
+				std::cout << "Action: " << action << "  Data saved successfully." << std::endl;
+				//std::cout << "Action: " << action << std::endl;
+				return "Data saved successfully.";
+			}
+			else if (action == "RETRIEVE") {
+				std::string key;
+
+
+				std::map<std::string, std::string>::iterator it = keyValues.find(key);
+				if (it != keyValues.end()) {
+					return it->second;
+				}
+				else {
+					return "Key not found.";
+				}
+			}
+			else if (action == "BACKUP") {
+				// Encrypt the data
+				std::string jsonData = json(keyValues).dump();
+				std::string encryptedData = encryptData(jsonData, encryptionKey);
+				return encryptedData;
+
+			}
+		}
+
+	}
+	return "Invalid request.";
+}
+
+
+
+int main() {
+    try {
+        std::map<std::string, std::string> config = readConfig("config.json");
+
+        std::string verseFolderPath = config["verseFolderPath"];
+        encryptionKey = config["encryptionKey"];
+
+        verseFilePath = verseFolderPath + "/data.vs";
+        dataFilePath = verseFolderPath + "/data.dat";
+
+        std::map<std::string, std::string> keyValues; // Define keyValues here
+
+        // Load existing data from files, if any
         try {
-            std::map<std::string, std::string> config = readConfig("config.json");
-
-            std::string verseFolderPath = config["verseFolderPath"];
-            std::string encryptionKey = config["encryptionKey"];
-
-            // Prompt user to enter the key ID and value
-            std::cout << "Enter key ID: ";
-            std::string keyId;
-            std::getline(std::cin, keyId);
-
-            std::cout << "Enter value: ";
-            std::string value;
-            std::getline(std::cin, value);
-
-            // Create the verse folder if it doesn't exist
-            std::filesystem::create_directory(verseFolderPath);
-
-            // Generate a unique filename for the verse and data files
-            //std::string guid = generateGUID();
-
-            std::string verseFilePath = verseFolderPath + "/data.vs";
-            std::string dataFilePath = verseFolderPath + "/data.dat";
-
-            // Retrieve existing data from the data file, if any
-            std::map<std::string, std::string> existingData;
-            try {
-                existingData = retrieveData(encryptionKey, dataFilePath);
-            }
-            catch (const std::exception& ex) {
-                // Ignore if data file doesn't exist or is empty
-            }
-
-            // Add the new key-value pair to the existing data
-            existingData[keyId] = value;
-
-            // Save all the data to the verse file and data file
-            saveData(encryptionKey, verseFilePath, dataFilePath, existingData, encryptionKey);
-
-            // Retrieve the data from the data file
-            std::map<std::string, std::string> retrievedData = retrieveData(encryptionKey, dataFilePath);
-
-            // Print the retrieved data
-            std::cout << "Retrieved data from " << dataFilePath << ":" << std::endl;
-            for (const auto& pair : retrievedData) {
-                std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
-            }
+            keyValues = retrieveData(encryptionKey, dataFilePath);
         }
         catch (const std::exception& ex) {
-            std::cout << "Exception occurred: " << ex.what() << std::endl;
-            // Handle the exception gracefully
+            // Ignore if data files don't exist or are empty
         }
 
-        return 0;
+        // Server setup and accepting client connections
+        asio::io_service ioService;
+        asio::ip::tcp::acceptor acceptor(ioService, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), 4545));
+
+        std::cout << "KeyVerse Server is running. Listening on port 4545..." << std::endl;
+
+        while (true) {
+            asio::ip::tcp::socket socket(ioService);
+            acceptor.accept(socket);
+
+            asio::streambuf receiveBuffer;
+            asio::read_until(socket, receiveBuffer, '\n');
+
+            std::istream receiveStream(&receiveBuffer);
+            std::string request;
+            std::getline(receiveStream, request);
+
+            std::string response = handleRequest(request, keyValues); // Pass keyValues to handleRequest
+
+            asio::write(socket, asio::buffer(response + "\n"));
+        }
+
     }
+    catch (const std::exception& ex) {
+        // std::cout << "Exception occurred: " << ex.what() << std::endl;
+        log(ex.what());
+        // Handle the exception gracefully
+    }
+
+    return 0;
+}
