@@ -1,4 +1,6 @@
 {
   "verseFolderPath": "Data/Verses",
-  "encryptionKey": "AeQu8shee1aim7at"
+  "encryptionKey": "AeQu8shee1aim7at",
+  "cloudStorageURL": "",
+  "appport": "4545"
 }
