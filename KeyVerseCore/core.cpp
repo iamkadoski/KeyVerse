@@ -422,13 +422,33 @@ std::string listRecords(const std::map<std::string, std::string>& keyValues)
 	return result;
 }
 
-std::string listAllRecords(const std::map<std::string, std::string>& keyValues) 
+
+
+std::string listAllRecords()
 {
-	std::string result = "Listing all records:\n";
-	for (const auto& kv : keyValues) {
-		result += kv.first + " => " + kv.second + "\n";
+	try {
+		std::string encryptedData;
+		std::ifstream file(dataFilePath, std::ios::binary);
+		if (!file) {
+			throw std::runtime_error("Failed to open data file for reading");
+		}
+
+		encryptedData.assign((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+		file.close();
+
+		std::string decryptedData = decryptData(encryptedData, encryptionKey);
+		json jsonData = json::parse(decryptedData);
+
+		std::string result = "Listing all records:\n";
+		for (const auto& kv : jsonData.items()) {
+			result += kv.key() + " => " + kv.value().get<std::string>() + "\n";
+		}
+		return result;
 	}
-	return result;
+	catch (const std::exception& ex) {
+		log(ex.what());
+		return "An error occurred while listing records.";
+	}
 }
 
 
@@ -476,7 +496,7 @@ std::string handleRequest(const std::string& request, std::map<std::string, std:
 		}
 		else if (action == "LIST_ALL") 
 		{
-			return listAllRecords(keyValues);
+			return listAllRecords();
 		}
 		else if (action == "BACKUP") 
 		{
