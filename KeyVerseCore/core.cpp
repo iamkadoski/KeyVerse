@@ -514,8 +514,10 @@ std::string handleRequest(const std::string& request, std::map<std::string, std:
 
 
 
-int main() {
-	try {
+int main() 
+{
+	try 
+	{
 		// std::map<std::string, std::string> config = readConfig("config.json");
 
 		std::string verseFolderPath = config["verseFolderPath"];
@@ -541,7 +543,7 @@ int main() {
 
 		// Server setup and accepting client connections
 		asio::io_service ioService;
-		//asio::ip::tcp::acceptor acceptor(ioService, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), 4545));
+
 		asio::ip::tcp::acceptor acceptor(ioService, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port));
 
 		std::cout << "KeyVerse Server is running. Listening on port " << port << " ..." << std::endl;
