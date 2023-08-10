@@ -43,9 +43,10 @@ To install and run KeyVerse Server, follow these steps:
    g++ -o keyverse_server main.cpp -lssl -lcrypto -lboost_system -lcurl
 
 4. Run the compiled executable:
-
+    
    ```bash
- ./keyverse_server
+ ./KeyVerse-Server
+
 
 ## Usage
 
