@@ -5,6 +5,8 @@ VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KeyVerseCore", "KeyVerseCore\KeyVerseCore.vcxproj", "{CF6BC609-AC8E-4E3F-8656-4E28D027771D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KeyVerseClinet", "KeyVerseClinet\KeyVerseClinet.vcxproj", "{169153BC-5F29-4229-967F-97B85B94102A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{CF6BC609-AC8E-4E3F-8656-4E28D027771D}.Release|x64.Build.0 = Release|x64
 		{CF6BC609-AC8E-4E3F-8656-4E28D027771D}.Release|x86.ActiveCfg = Release|Win32
 		{CF6BC609-AC8E-4E3F-8656-4E28D027771D}.Release|x86.Build.0 = Release|Win32
+		{169153BC-5F29-4229-967F-97B85B94102A}.Debug|x64.ActiveCfg = Debug|x64
+		{169153BC-5F29-4229-967F-97B85B94102A}.Debug|x64.Build.0 = Debug|x64
+		{169153BC-5F29-4229-967F-97B85B94102A}.Debug|x86.ActiveCfg = Debug|Win32
+		{169153BC-5F29-4229-967F-97B85B94102A}.Debug|x86.Build.0 = Debug|Win32
+		{169153BC-5F29-4229-967F-97B85B94102A}.Release|x64.ActiveCfg = Release|x64
+		{169153BC-5F29-4229-967F-97B85B94102A}.Release|x64.Build.0 = Release|x64
+		{169153BC-5F29-4229-967F-97B85B94102A}.Release|x86.ActiveCfg = Release|Win32
+		{169153BC-5F29-4229-967F-97B85B94102A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
