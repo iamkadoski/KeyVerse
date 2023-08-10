@@ -55,6 +55,11 @@ int main(int argc, char* argv[]) {
             std::cout << "Usage: " << argv[0] << " LIST_ALL" << std::endl;
             return 1;
         }
+        // return 1;
+    }
+    else if (action == "HELP") 
+    {
+        std::cout << "Available actions: SAVE, RETRIEVE, BACKUP" << std::endl;
     }
     else {
         std::cout << "Invalid action: " << action << std::endl;
