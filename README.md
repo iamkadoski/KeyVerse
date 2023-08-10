@@ -19,25 +19,50 @@ Each verse file contains encrypted data and metadata associated with the stored 
 
 - C++ compiler (supporting C++11 or later)
 - OpenSSL library
+- Boost C++ Libraries (asio)
+- CMake (for building)
 
-### Building the Application
+## Building and Running the Server
 
-1. Clone the KeyVerse repository: git clone https://github.com/your-username/KeyVerse.git 
+To build and run the KeyVerse Server, follow these steps:
 
-2. Build the application using your preferred build system or IDE. `./KeyVerse`
+1. Clone the repository to your local machine:
 
+   ```sh
+   git clone https://github.com/yourusername/KeyVerseServer.git
 
-### Usage
+  ```sh
+  cd KeyVerseServer
 
-1. Configure the application settings by editing the `config.json` file. Set the verse folder path and encryption key.
+## Usage
 
-2. Run the KeyVerse application:
+The KeyVerse Server listens for incoming connections on a specified port (default is 4545). Clients can connect to the server to perform various actions on the key-value      store.
 
-3. Follow the prompts to enter the key ID and value for your data.
+The server supports the following actions:
 
-4. The data will be saved to a verse file in the configured verse folder.
+  SAVE: Save a key-value pair.
+  RETRIEVE: Retrieve a value using a key.
+  BACKUP: Backup the key-value store to a file.
+  LIST_ALL: List all key-value pairs.
 
-5. To retrieve data, specify the key ID and the corresponding verse file will be decrypted.
+## API
+  The server's API follows a straightforward text-based protocol. Clients can send commands in the format:
+
+```sh
+  <action>|<key>[|<value>]
+
+  <action>: The action to perform (SAVE, RETRIEVE, BACKUP, LIST_ALL).
+  <key>: The key associated with the data.
+  <value> (optional): The value to store (used for the SAVE action).
+
+## Configuration
+  The server can be easily configured by editing the serverconfig.json file. This file allows you to specify the server's listening address and port.
+
+  ```sh
+      {
+        "serverAddress": "0.0.0.0",
+        "serverPort": "4545"
+      }
 
 ## Contributing
 
