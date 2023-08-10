@@ -34,7 +34,7 @@ To build and run the KeyVerse Server, follow these steps:
   ```sh
   cd KeyVerseServer
 
-### Usage
+## Usage
 
   The KeyVerse Server listens for incoming connections on a specified port (default is 4545). Clients can connect to the server to perform various actions on the key-value      store.
 
@@ -45,7 +45,7 @@ To build and run the KeyVerse Server, follow these steps:
     BACKUP: Backup the key-value store to a file.
     LIST_ALL: List all key-value pairs.
 
-### API
+## API
   The server's API follows a straightforward text-based protocol. Clients can send commands in the format:
 
 ```sh
@@ -55,7 +55,7 @@ To build and run the KeyVerse Server, follow these steps:
   <key>: The key associated with the data.
   <value> (optional): The value to store (used for the SAVE action).
 
-### Configuration
+## Configuration
   The server can be easily configured by editing the serverconfig.json file. This file allows you to specify the server's listening address and port.
 
   ```sh
