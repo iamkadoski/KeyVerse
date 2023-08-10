@@ -36,14 +36,14 @@ To build and run the KeyVerse Server, follow these steps:
 
 ## Usage
 
-  The KeyVerse Server listens for incoming connections on a specified port (default is 4545). Clients can connect to the server to perform various actions on the key-value      store.
+The KeyVerse Server listens for incoming connections on a specified port (default is 4545). Clients can connect to the server to perform various actions on the key-value      store.
 
-  The server supports the following actions:
+The server supports the following actions:
 
-    SAVE: Save a key-value pair.
-    RETRIEVE: Retrieve a value using a key.
-    BACKUP: Backup the key-value store to a file.
-    LIST_ALL: List all key-value pairs.
+  SAVE: Save a key-value pair.
+  RETRIEVE: Retrieve a value using a key.
+  BACKUP: Backup the key-value store to a file.
+  LIST_ALL: List all key-value pairs.
 
 ## API
   The server's API follows a straightforward text-based protocol. Clients can send commands in the format:
