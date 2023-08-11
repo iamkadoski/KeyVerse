@@ -28,6 +28,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="config.json" />
+    <None Include="docker-compose.yml" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="log.h">
