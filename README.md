@@ -62,15 +62,22 @@ For example, to store a key-value pair:
 ````bash
  SAVE|your_key|your_value
 
+ ```
+
 
 To retrieve the value for a specific key:
+
 ```bash
  RETRIEVE|your_key
 
+```
+
 To list all stored records:
+
 ```bash
  LIST_ALL
 
+ ```
 
 ## Contributing
 Contributions to KeyVerse Server are welcome! If you find any issues or have suggestions for improvements, feel free to submit a pull request or create an issue in the repository.
