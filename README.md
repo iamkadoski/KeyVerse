@@ -52,16 +52,16 @@ To install and run KeyVerse Server, follow these steps:
 KeyVerse Server is designed to be a command-line application. It listens on a specified port for incoming client connections and responds to requests for storing, retrieving, and listing key-value pairs. The server can be accessed through HTTP-like requests, and responses are sent back to the client.
 
 For example, to store a key-value pair:
-    ```bash
+```bash
    SAVE|your_key|your_value
 
 
 To retrieve the value for a specific key:
-    ```bash
+```bash
    RETRIEVE|your_key
 
 To list all stored records:
-    ```bash
+```bash
    LIST_ALL
 
 
