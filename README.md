@@ -65,10 +65,10 @@ To list all stored records:
  LIST_ALL
 
 
-### Contributing
+## Contributing
 Contributions to KeyVerse Server are welcome! If you find any issues or have suggestions for improvements, feel free to submit a pull request or create an issue in the repository.
 
-### License
+## License
 KeyVerse Server is open-source software licensed under the MIT License. Feel free to use, modify, and distribute the software according to the terms of the license.
 
 
