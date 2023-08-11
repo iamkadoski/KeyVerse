@@ -59,7 +59,7 @@ KeyVerse Server is designed to be a command-line application. It listens on a sp
 
 For example, to store a key-value pair:
 
-````bash
+```bash
  SAVE|your_key|your_value
 
  ```
