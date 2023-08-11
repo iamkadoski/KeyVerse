@@ -53,16 +53,16 @@ KeyVerse Server is designed to be a command-line application. It listens on a sp
 
 For example, to store a key-value pair:
 ```bash
-  SAVE|your_key|your_value
+ SAVE|your_key|your_value
 
 
 To retrieve the value for a specific key:
 ```bash
-  RETRIEVE|your_key
+ RETRIEVE|your_key
 
 To list all stored records:
 ```bash
-  LIST_ALL
+ LIST_ALL
 
 
 ### Contributing
