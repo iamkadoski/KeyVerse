@@ -53,25 +53,23 @@ To install and run KeyVerse Server, follow these steps:
 KeyVerse Server is designed to be a command-line application. It listens on a specified port for incoming client connections and responds to requests for storing, retrieving, and listing key-value pairs. The server can be accessed through HTTP-like requests, and responses are sent back to the client.
 
 For example, to store a key-value pair:
-
  ```bash
 SAVE|your_key|your_value
 
-To retrieve the value for a specific key:
 
+To retrieve the value for a specific key:
  ```bash
 RETRIEVE|your_key
 
 To list all stored records:
-
  ```bash
 LIST_ALL
 
 
-## Contributing
+### Contributing
 Contributions to KeyVerse Server are welcome! If you find any issues or have suggestions for improvements, feel free to submit a pull request or create an issue in the repository.
 
-## License
+### License
 KeyVerse Server is open-source software licensed under the MIT License. Feel free to use, modify, and distribute the software according to the terms of the license.
 
 
