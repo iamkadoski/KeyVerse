@@ -32,27 +32,34 @@ To install and run KeyVerse Server, follow these steps:
    ```bash
    git clone https://github.com/your-username/KeyVerse-Server.git
 
+   ```
+
 2. Navigate to the project directory:
-   
+
    ```bash
    cd KeyVerse-Server
 
+   ```
+
 3. Build the application using a C++ compiler:
- 
+
    ```bash
       g++ -o keyverse_server main.cpp -lssl -lcrypto -lboost_system -lcurl
+
+   ```
 
 4. Run the compiled executable:
    ```bash
     ./KeyVerse-Server
-
+   ```
 
 ## Usage
 
 KeyVerse Server is designed to be a command-line application. It listens on a specified port for incoming client connections and responds to requests for storing, retrieving, and listing key-value pairs. The server can be accessed through HTTP-like requests, and responses are sent back to the client.
 
 For example, to store a key-value pair:
-```bash
+
+````bash
  SAVE|your_key|your_value
 
 
@@ -72,3 +79,4 @@ Contributions to KeyVerse Server are welcome! If you find any issues or have sug
 KeyVerse Server is open-source software licensed under the MIT License. Feel free to use, modify, and distribute the software according to the terms of the license.
 
 
+````
