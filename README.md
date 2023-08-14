@@ -31,9 +31,12 @@ To build and run the KeyVerse Server, follow these steps:
    ```sh
    git clone https://github.com/yourusername/KeyVerseServer.git
 
+    ```
+
   ```sh
   cd KeyVerseServer
 
+ ```
 ## Usage
 
 The KeyVerse Server listens for incoming connections on a specified port (default is 4545). Clients can connect to the server to perform various actions on the key-value      store.
@@ -55,6 +58,7 @@ The server supports the following actions:
   <key>: The key associated with the data.
   <value> (optional): The value to store (used for the SAVE action).
 
+ ```
 ## Configuration
   The server can be easily configured by editing the serverconfig.json file. This file allows you to specify the server's listening address and port.
 
