@@ -1,79 +1,88 @@
-# KeyVerse
+# KeyVerse Server
 
-KeyVerse is a secure data storage and encryption application that allows you to store sensitive data in encrypted verse files. 
-Each verse file contains encrypted data and metadata associated with the stored information.
+KeyVerse Server is a C++ application designed to provide secure storage and retrieval of key-value data. This server-side application utilizes the AES-128 CBC mode encryption for data security and offers various functionalities for managing and interacting with the stored data.
+
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Endpoints](#endpoints)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Introduction
+
+KeyVerse Server is a backend application developed in C++, aimed at securely storing and managing key-value data. The application encrypts the data using the AES-128 CBC encryption mode to ensure data security. It allows you to store, retrieve, and list key-value pairs, making it useful for various applications that require secure data storage and retrieval.
 
 ## Features
 
-- Generate encryption keys for data encryption and decryption.
-- Encrypt data using AES-128 CBC mode.
-- Decrypt data from verse files.
-- Save data to encrypted verse files with metadata.
-- Retrieve data from verse files.
-- Configuration management through a JSON config file.
-- Verse file upload to a cloud storage(AWS S3) using RESTful API
+- Secure storage of key-value data using AES-128 CBC encryption.
+- Support for saving and retrieving individual records.
+- Ability to list all stored records.
+- Integration with cloud storage for backup and restore.
 
-## Getting Started
+## Installation
 
-### Prerequisites
-
-- C++ compiler (supporting C++11 or later)
-- OpenSSL library
-- Boost C++ Libraries (asio)
-- CMake (for building)
-
-## Building and Running the Server
-
-To build and run the KeyVerse Server, follow these steps:
+To install and run KeyVerse Server, follow these steps:
 
 1. Clone the repository to your local machine:
 
-   ```sh
-   git clone https://github.com/yourusername/KeyVerseServer.git
+   ```bash
+   git clone https://github.com/your-username/KeyVerse.git
 
-    ```
+   ```
 
-  ```sh
-  cd KeyVerseServer
+2. Navigate to the project directory:
 
- ```
+   ```bash
+   cd KeyVerseCore
+
+   ```
+
+3. Build the application using a C++ compiler:
+
+   ```bash
+      g++ -o keyverse_server core.cpp -lssl -lcrypto -lboost_system -lcurl
+
+   ```
+
+4. Run the compiled executable:
+   ```bash
+    ./KeyVerse-Server
+   ```
+
 ## Usage
 
-The KeyVerse Server listens for incoming connections on a specified port (default is 4545). Clients can connect to the server to perform various actions on the key-value      store.
+KeyVerse Server is designed to be a command-line application. It listens on a specified port for incoming client connections and responds to requests for storing, retrieving, and listing key-value pairs. The server can be accessed through HTTP-like requests, and responses are sent back to the client.
 
-The server supports the following actions:
+For example, to store a key-value pair:
 
-  SAVE: Save a key-value pair.
-  RETRIEVE: Retrieve a value using a key.
-  BACKUP: Backup the key-value store to a file.
-  LIST_ALL: List all key-value pairs.
-
-## API
-  The server's API follows a straightforward text-based protocol. Clients can send commands in the format:
-
-```sh
-  <action>|<key>[|<value>]
-
-  <action>: The action to perform (SAVE, RETRIEVE, BACKUP, LIST_ALL).
-  <key>: The key associated with the data.
-  <value> (optional): The value to store (used for the SAVE action).
+```bash
+ SAVE|your_key|your_value
 
  ```
-## Configuration
-  The server can be easily configured by editing the serverconfig.json file. This file allows you to specify the server's listening address and port.
 
-  ```sh
-      {
-        "serverAddress": "0.0.0.0",
-        "serverPort": "4545"
-      }
+
+To retrieve the value for a specific key:
+
+```bash
+ RETRIEVE|your_key
+
+```
+
+To list all stored records:
+
+```bash
+ LIST_ALL
+
  ```
+
 ## Contributing
-
-Contributions are welcome! If you find any issues or have suggestions for improvements, please submit an issue or create a pull request.
+Contributions to KeyVerse Server are welcome! If you find any issues or have suggestions for improvements, feel free to submit a pull request or create an issue in the repository.
 
 ## License
-
-[MIT License](LICENSE)
+KeyVerse Server is open-source software licensed under the MIT License. Feel free to use, modify, and distribute the software according to the terms of the license.
 
 
