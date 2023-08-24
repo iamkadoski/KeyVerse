@@ -44,7 +44,7 @@ To install and run KeyVerse Server, follow these steps:
 3. Build the application using a C++ compiler:
 
    ```bash
-      g++ -o keyverse_server main.cpp -lssl -lcrypto -lboost_system -lcurl
+      g++ -o keyverse_server core.cpp -lssl -lcrypto -lboost_system -lcurl
 
    ```
 
