@@ -144,6 +144,9 @@
   <ItemGroup>
     <ClInclude Include="log.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Text.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\vcpkg.C.Projects.KeyVerse.vcpkg.1.0.0\build\native\vcpkg.C.Projects.KeyVerse.vcpkg.targets" Condition="Exists('..\packages\vcpkg.C.Projects.KeyVerse.vcpkg.1.0.0\build\native\vcpkg.C.Projects.KeyVerse.vcpkg.targets')" />

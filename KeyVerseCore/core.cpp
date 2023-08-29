@@ -29,7 +29,8 @@ std::string encryptionKey;
 
 
 // Function to read the configuration from the config file
-std::map<std::string, std::string> readConfig(const std::string& configFilePath) {
+std::map<std::string, std::string> readConfig(const std::string& configFilePath) 
+{
 	std::ifstream file(configFilePath);
 	if (!file) {
 		throw std::runtime_error("Failed to open config file for reading");
@@ -171,7 +172,8 @@ std::string decryptData(const std::string& encryptedData, const std::string& key
 }
 
 // Function to save the key-value data to an encrypted verse file and a single data file
-void saveData(const std::map<std::string, std::string>& keyValues, const std::string& encryptionKey) {
+void saveData(const std::map<std::string, std::string>& keyValues, const std::string& encryptionKey) 
+{
 	try
 	{
 		// Encrypt the data
@@ -187,10 +189,14 @@ void saveData(const std::map<std::string, std::string>& keyValues, const std::st
 		verseFileOut.close();
 
 		std::ofstream dataFile(dataFilePath, std::ios::binary);
-		if (!dataFile) {
+
+		if (!dataFile) 
+		{
 			throw std::runtime_error("Failed to open data file for writing");
 		}
+
 		dataFile.write(encryptedData.c_str(), encryptedData.size());
+
 		dataFile.close();
 
 		//logging outcome to log file
@@ -206,21 +212,26 @@ void saveData(const std::map<std::string, std::string>& keyValues, const std::st
 }
 
 // Function to retrieve data from the data file and decrypt it
-std::map<std::string, std::string> retrieveData(const std::string& encryptionKey, const std::string& dataFilePath) {
+std::map<std::string, std::string> retrieveData(const std::string& encryptionKey, const std::string& dataFilePath) 
+{
 	std::map<std::string, std::string> keyValues;
 
 	std::ifstream file(dataFilePath, std::ios::binary);
-	if (!file) {
+	if (!file) 
+	{
 		throw std::runtime_error("Failed to open data file for reading");
 	}
 
 	std::string encryptedData((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+
 	file.close();
 
 	std::string decryptedData = decryptData(encryptedData, encryptionKey);
+
 	json jsonData = json::parse(decryptedData);
 
-	for (auto it = jsonData.begin(); it != jsonData.end(); ++it) {
+	for (auto it = jsonData.begin(); it != jsonData.end(); ++it) 
+	{
 		keyValues[it.key()] = it.value();
 	}
 
@@ -481,7 +492,7 @@ std::string handleRequest(const std::string& request, std::map<std::string, std:
 			//std::cout << "Action: " << action << std::endl;
 			return "Data saved successfully.";
 		}
-		else if (action == "RETRIEVE")
+		else if (action == "RETRIEVE" || action == "GET")
 		{
 			std::map<std::string, std::string>::iterator it = keyValues.find(key);
 
@@ -519,6 +530,24 @@ int main()
 	try 
 	{
 		// std::map<std::string, std::string> config = readConfig("config.json");
+
+		std::string logo = R"(
+			 _  __       __      __                   _____                          
+			| |/ /       \ \    / /                  / ____|                         
+			| ' / ___ _   \ \  / /__ _ __ ___  ___  | (___   ___ _ ____   _____ _ __ 
+			|  < / _ \ | | \ \/ / _ \ '__/ __|/ _ \  \___ \ / _ \ '__\ \ / / _ \ '__|
+			| . \  __/ |_| |\  /  __/ |  \__ \  __/  ____) |  __/ |   \ V /  __/ |   
+			|_|\_\___|\__, | \/ \___|_|  |___/\___| |_____/ \___|_|    \_/ \___|_|   
+					   __/ |                                                         
+					  |___/                                                          
+
+				)";
+
+		// Print the logo to the terminal
+		std::cout << logo << std::endl;
+
+
+
 
 		std::string verseFolderPath = config["verseFolderPath"];
 		encryptionKey = config["encryptionKey"];
