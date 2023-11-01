@@ -42,13 +42,14 @@ To install and run KeyVerse Server, follow these steps:
    ```
 
 3. Build the application using a C++ compiler:
-    Replace /path/to/nlohmann/json/include with the actual path to the nlohmann JSON library's include directory.
+   
+   Replace /path/to/nlohmann/json/include with the actual path to the nlohmann JSON library's include directory.
    
    ```bash
      g++ -o keyverse_server core.cpp -lssl -lcrypto -lboost_system -lcurl -I/path/to/nlohmann/json/include
    ```
 
-4. Run the compiled executable:
+5. Run the compiled executable:
    ```bash
     ./KeyVerse-Server
    ```
